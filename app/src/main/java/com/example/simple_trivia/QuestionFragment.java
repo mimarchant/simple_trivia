@@ -3,10 +3,15 @@ package com.example.simple_trivia;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
+
+import com.example.simple_trivia.databinding.FragmentQuestionBinding;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -14,6 +19,8 @@ import android.view.ViewGroup;
  * create an instance of this fragment.
  */
 public class QuestionFragment extends Fragment {
+    private FragmentQuestionBinding binding;
+    private String answer = "kny";
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -59,6 +66,30 @@ public class QuestionFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_question, container, false);
+        binding = FragmentQuestionBinding.inflate(getLayoutInflater());
+        Bundle bundle = this.getArguments();
+        if (bundle != null) {
+            String name = bundle.getString("name", "");
+            String greeting = "Hola, " + name;
+            binding.textViewName.setText(greeting);
+        }
+
+        binding.continueBtn.setOnClickListener(v -> {
+            int selectedId = binding.radioGroup.getCheckedRadioButtonId();
+            Bundle answer = new Bundle();
+
+            if (selectedId == -1) {
+                Toast.makeText(getContext(), "Debes seleccionar una opción", Toast.LENGTH_SHORT).show();
+            } else answer.putBoolean("isCorrect", selectedId == R.id.kny);
+
+            Navigation.findNavController(getView()).navigate(R.id.action_questionFragment_to_answerFragment, answer);
+
+        });
+
+
+
+
+
+        return binding.getRoot();
     }
 }

@@ -3,10 +3,12 @@ package com.example.simple_trivia;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.simple_trivia.databinding.FragmentWelcomeBinding;
 
@@ -62,6 +64,20 @@ public class WelcomeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_welcome, container, false);
+        binding = FragmentWelcomeBinding.inflate(getLayoutInflater());
+
+        binding.startBtn.setOnClickListener(v -> {
+            String name = binding.nameInput.getText().toString();
+            Bundle props = new Bundle();
+            props.putString("name", name);
+
+            if (name.isEmpty()) {
+                Toast.makeText(getContext(), "debes ingresar un nombre", Toast.LENGTH_SHORT).show();
+               return;
+            }
+
+            Navigation.findNavController(getView()).navigate(R.id.action_welcomeFragment_to_questionFragment, props);
+        });
+        return binding.getRoot();
     }
 }
